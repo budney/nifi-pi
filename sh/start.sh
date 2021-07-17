@@ -117,6 +117,10 @@ case ${AUTH} in
         ;;
 esac
 
+# Save flow files where they can persist between runs
+prop_replace 'nifi.flow.configuration.file'                 "${NIFI_FLOW_CONFIGURATION_FILE:-}"
+prop_replace 'nifi.flow.configuration.archive.dir'          "${NIFI_FLOW_CONFIGURATION_ARCHIVE_DIR:-}"
+
 # Continuously provide logs so that 'docker logs' can    produce them
 "${NIFI_HOME}/bin/nifi.sh" run &
 nifi_pid="$!"
