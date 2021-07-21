@@ -121,6 +121,12 @@ esac
 prop_replace 'nifi.flow.configuration.file'                 "${NIFI_FLOW_CONFIGURATION_FILE:-}"
 prop_replace 'nifi.flow.configuration.archive.dir'          "${NIFI_FLOW_CONFIGURATION_ARCHIVE_DIR:-}"
 
+# Set any and all NiFi options that are found in environment
+# variables of the form X_NIFI_*
+for V in $(env|egrep ^X_NIFI|sed -e 's}=.*$}}; s}^X_}}'); do
+    prop_replace "$( echo $V | tr A-Z_ a-z. )" $(eval echo "\$X_$V")
+done
+
 # Continuously provide logs so that 'docker logs' can    produce them
 "${NIFI_HOME}/bin/nifi.sh" run &
 nifi_pid="$!"
